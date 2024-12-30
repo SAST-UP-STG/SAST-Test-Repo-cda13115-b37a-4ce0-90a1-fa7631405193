@@ -85,7 +85,16 @@ public class ProfileUploadRetrieval extends AssignmentEndpoint {
 //            var id = request.getParameter("id");
             // comment
             // comment 2
-            (new File(request.getParameter("id"))).exists();
+            File file = new File(request.getParameter("id"));
+            try {
+                String normalizedPath = file.getCanonicalPath();
+                if (!normalizedPath.startsWith(new File("./").getCanonicalPath())) {
+                    throw new SecurityException("Attempt to access file outside of the base directory.");
+                }
+            } catch (IOException e) {
+                throw new SecurityException("Error validating file path.", e);
+            }
+            file.exists();
 
 //            if (catPicture.getName().toLowerCase().contains("path-traversal-secret.jpg")) {
 //                return ResponseEntity.ok()
